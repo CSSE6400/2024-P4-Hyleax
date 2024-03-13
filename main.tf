@@ -1,8 +1,8 @@
 terraform {
     required_providers {
         aws = {
-        source = "hashicorp/aws"
-        version = "~> 5.0"  
+            source = "hashicorp/aws"
+            version = "~> 5.0"  
         }
     }
 }
@@ -20,7 +20,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "hextris-server" {
-    ami = data.aws_ami.latest.id
+    ami = "ami-0e731c8a588258d0d"
     instance_type = "t2.micro"
     key_name = "vockey"
     tags = {
@@ -37,18 +37,20 @@ output "hextris-url" {
 resource "aws_security_group" "hextris-server" {
     name = "hextris-server"
     description = "Hextris HTTP and SSH access"
-    ingress {
-        from_port = 80
-        to_port = 80
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    ingress {
-        from_port = 22
-        to_port = 22
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+    ingress = [
+        {
+            from_port = 80
+            to_port = 80
+            protocol = "tcp"
+            cidr_blocks = ["0.0.0.0/0"]
+        }, 
+        {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr_blocks = ["0.0.0.0/0"]
+        }
+    ]
     egress {
         from_port = 0
         to_port = 0
